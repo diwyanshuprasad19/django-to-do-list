@@ -1,24 +1,22 @@
 {% extends 'todos/base.html' %}
 
 {% block title %}
-<title>Todo list</title>
+<title>Todo List</title>
 {% endblock %}
 
 {% block content %}
 <div class="container">
 
-  <!-- title row -->
+  <!-- Title Row -->
   <div class="row">
     <div class="offset-md-2 col-lg-9">
       <div class="page-header">
-        <h1>
-          Todo List
-        </h1>
+        <h1>Todo List</h1>
       </div>
     </div>
   </div>
 
-  <!-- Add a todo row -->
+  <!-- Add a Todo Row -->
   <div class="row">
     <div class="offset-md-2 col-lg-9">
       <form method="post" action="{% url 'todos:add' %}">
@@ -28,9 +26,7 @@
             <input type="text" class="form-control" name="title" placeholder="Do laundry" required>
           </div>
           <div class="col-md-6">
-            <button type="submit" name="submit" class="btn btn-outline-primary">
-              Add
-            </button>
+            <button type="submit" name="submit" class="btn btn-outline-primary">Add</button>
           </div>
         </div>
       </form>
@@ -38,27 +34,31 @@
   </div>
   <hr />
 
-  <!-- todo list row -->
+  <!-- Todo List Row -->
   <div class="row">
     <div class="offset-md-2 col-lg-6">
       <div class="list-group">
         {% for todo in todo_list %}
-        <div class="list-group-item {% if todo.isCompleted %} todo-complete {% endif %}">
+        <div class="list-group-item {% if todo.isCompleted %}todo-complete{% endif %}">
+          <!-- Update Todo Status -->
           <form style="display: inline;" method="post" action="{% url 'todos:update' todo.id %}">
             {% csrf_token %}
-            <input type="checkbox" name="isCompleted" onchange="this.form.submit()" {% if todo.isCompleted %} checked
-              {% endif %} class="todo-status-checkbox"
-              title="{% if not todo.isCompleted %} mark as done {% else %} mark undone {% endif %}">
+            <input type="checkbox" name="isCompleted" onchange="this.form.submit()" {% if todo.isCompleted %}checked{% endif %} class="todo-status-checkbox" title="{% if not todo.isCompleted %}Mark as done{% else %}Mark undone{% endif %}">
           </form>
           {{ todo.title }}
-          <a href="{% url 'todos:delete' todo.id %}" title="Delete">
-            <i class="far fa-trash-alt"></i>
-          </a>
+          <!-- Delete Todo -->
+          <form style="display: inline;" method="post" action="{% url 'todos:delete' todo.id %}" onsubmit="return confirm('Are you sure you want to delete this todo?');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-link" title="Delete">
+              <i class="far fa-trash-alt"></i>
+            </button>
+          </form>
         </div>
+        {% empty %}
+        <div class="list-group-item">No todos found.</div>
         {% endfor %}
       </div>
     </div>
   </div>
 </div>
-
 {% endblock %}
